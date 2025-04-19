@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cine Premium Lima</title>
+    <style>
+      :root {
+        --primary: #e50914;
+        --secondary: #b81d24;
+        --dark: #221f1f;
+        --light: #f5f5f1;
+        --gray: #808080;
+        --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--dark);
+        color: var(--light);
+        line-height: 1.6;
+      }
+
+      header {
+        background: linear-gradient(to right, #000, var(--primary));
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: white;
+        text-decoration: none;
+      }
+
+      .logo span {
+        color: var(--primary);
+      }
+
+      nav a {
+        color: var(--light);
+        margin-left: 1.5rem;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      nav a:hover {
+        color: var(--primary);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+        text-align: center;
+      }
+
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--light);
+      }
+
+      .filter-container {
+        background: rgba(0, 0, 0, 0.7);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+      }
+
+      .filter-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .filter-group label {
+        font-weight: bold;
+        margin-right: 0.5rem;
+      }
+
+      .filter-group select {
+        padding: 0.7rem 1rem;
+        border-radius: 5px;
+        border: none;
+        background-color: var(--light);
+        font-size: 1rem;
+        min-width: 200px;
+      }
+
+      .movies-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .movie-card {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: var(--shadow);
+        position: relative;
+      }
+
+      .movie-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .movie-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        display: block;
+      }
+
+      .movie-info {
+        padding: 1.5rem;
+      }
+
+      .movie-title {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        color: white;
+      }
+
+      .movie-author {
+        color: var(--gray);
+        margin-bottom: 0.5rem;
+      }
+
+      .movie-price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .movie-description {
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clap: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.7rem 1.5rem;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
+
+      .btn:hover {
+        background-color: var(--secondary);
+      }
+
+      .favorite-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.7);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: var(--gray);
+        transition: all 0.3s;
+      }
+
+      .favorite-btn.active {
+        color: var(--primary);
+      }
+
+      .favorite-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .movie-detail {
+        display: none;
+        max-width: 1000px;
+        margin: 2rem auto;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+
+      .detail-container {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .detail-image {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+      }
+
+      .detail-content {
+        padding: 2rem;
+      }
+
+      .back-btn {
+        display: inline-block;
+        margin-top: 1.5rem;
+        padding: 0.7rem 1.5rem;
+        background-color: var(--gray);
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
+
+      .back-btn:hover {
+        background-color: #5a5a5a;
+      }
+
+      .contact-section {
+        display: none;
+        max-width: 1000px;
+        margin: 2rem auto;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: var(--shadow);
+      }
+
+      .contact-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .contact-form {
+        flex: 1;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.8rem;
+        border-radius: 5px;
+        border: 1px solid var(--gray);
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--light);
+        font-size: 1rem;
+      }
+
+      .form-group textarea {
+        min-height: 150px;
+        resize: vertical;
+      }
+
+      .submit-btn {
+        background-color: var(--primary);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .submit-btn:hover {
+        background-color: var(--secondary);
+      }
+
+      .location-info {
+        flex: 1;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 1.5rem;
+        border-radius: 10px;
+      }
+
+      .location-info h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .location-info p {
+        margin-bottom: 0.8rem;
+      }
+
+      .map-container {
+        margin-top: 1.5rem;
+        height: 300px;
+        background: var(--gray);
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark);
+        font-weight: bold;
+      }
+
+      footer {
+        background: linear-gradient(to right, #000, var(--primary));
+        color: white;
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 3rem;
+      }
+
+      @media (max-width: 768px) {
+        .header-container {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        nav {
+          width: 100%;
+          display: flex;
+          justify-content: space-around;
+        }
+
+        nav a {
+          margin: 0;
+        }
+
+        .movies-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .detail-container {
+          flex-direction: column;
+        }
+
+        .detail-image {
+          height: 300px;
+        }
+
+        .contact-container {
+          flex-direction: column;
+        }
+      }
+
+      @media (min-width: 769px) {
+        .detail-container {
+          flex-direction: row;
+        }
+
+        .detail-image {
+          width: 40%;
+          height: auto;
+        }
+
+        .detail-content {
+          width: 60%;
+        }
+
+        .contact-container {
+          flex-direction: row;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-container">
+        <a href="#" class="logo" onclick="showHome()"
+          >Cine<span>Premium</span></a
+        >
+        <nav>
+          <a href="#" onclick="showHome()">Inicio</a>
+          <a href="#" onclick="showContact()">Contacto</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div id="home-view">
+        <h1>Películas Exclusivas en Lima</h1>
+
+        <div class="filter-container">
+          <div class="filter-group">
+            <label for="category-filter">Filtrar por categoría:</label>
+            <select id="category-filter" onchange="filterMovies()">
+              <option value="all">Todas las categorías</option>
+              <option value="drama">Drama</option>
+              <option value="fantasy">Fantasía</option>
+              <option value="adventure">Aventura</option>
+              <option value="action">Acción</option>
+              <option value="western">Western</option>
+              <option value="comedy">Comedia</option>
+              <option value="superhero">Superhéroes</option>
+              <option value="historical">Histórica</option>
+              <option value="horror">Terror</option>
+              <option value="mystery">Misterio</option>
+              <option value="sci-fi">Ciencia ficción</option>
+              <option value="cyberpunk">Cyberpunk</option>
+              <option value="time travel">Viajes en el tiempo</option>
+              <option value="thriller">Thriller</option>
+              <option value="suspense">Suspenso</option>
+              <option value="crime">Crimen</option>
+              <option value="design">Diseño</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="movies-grid" id="movies-container"></div>
+      </div>
+
+      <div id="movie-detail-view" class="movie-detail">
+        <div class="detail-container">
+          <img id="detail-image" class="detail-image" src="" alt="" />
+          <div class="detail-content">
+            <h2 id="detail-title"></h2>
+            <button id="detail-favorite-btn" class="favorite-btn">♥</button>
+            <p><strong>Director:</strong> <span id="detail-author"></span></p>
+            <p><strong>Precio:</strong> $<span id="detail-price"></span></p>
+            <p>
+              <strong>Categoría:</strong> <span id="detail-category"></span>
+            </p>
+            <p>
+              <strong>Descripción:</strong>
+              <span id="detail-description"></span>
+            </p>
+            <a href="#" class="back-btn" onclick="showHome()"
+              >Volver al listado</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <div id="contact-view" class="contact-section">
+        <h2>Contacto y Ubicación</h2>
+
+        <div class="contact-container">
+          <div class="contact-form">
+            <form id="contact-form">
+              <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" required />
+              </div>
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required />
+              </div>
+              <div class="form-group">
+                <label for="message">Mensaje:</label>
+                <textarea id="message" name="message" required></textarea>
+              </div>
+              <button type="submit" class="submit-btn">Enviar Mensaje</button>
+            </form>
+          </div>
+
+          <div class="location-info">
+            <h3>Nuestra Ubicación</h3>
+            <p><strong>Dirección:</strong> Av. Javier Prado 1234, Lima</p>
+            <p><strong>Zona:</strong> Premium - Cercado de Lima</p>
+            <p><strong>Horario:</strong> 10:00 - 22:00</p>
+            <p><strong>Teléfono:</strong> (01) 234-5678</p>
+
+            <div class="map-container">
+              [<iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2007.8543882566496!2d-76.9766943452403!3d-12.085507901718401!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c7ee4efb8e21%3A0x2509617adc638a91!2sJockey%20Plaza.!5e0!3m2!1ses!2spe!4v1745076328605!5m2!1ses!2spe"
+                width="600"
+                height="300"
+                style="border: 0"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2023 Cine Premium Lima. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+      const moviesData = [
+        {
+          id: 1,
+          title: "A Working Man",
+          author: "John Carter",
+          price: 29.99,
+          category: "drama",
+          image:
+            "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xUkUZ8eOnrOnnJAfusZUqKYZiDu.jpg",
+          description: "A man struggles to survive in a failing economy.",
+        },
+        {
+          id: 2,
+          title: "In the Lost Lands",
+          author: "George R. M.",
+          price: 25.5,
+          category: "fantasy",
+          image: "/images/lands.jpg",
+          description: "A sorceress ventures into forbidden territories.",
+        },
+        {
+          id: 3,
+          title: "A Minecraft Movie",
+          author: "Pixel Studios",
+          price: 19.99,
+          category: "adventure",
+          image: "/images/minecraft.jpg",
+          description: "The block world faces a new threat.",
+        },
+        {
+          id: 4,
+          title: "G20",
+          author: "Jane Doe",
+          price: 22.0,
+          category: "action",
+          image: "/images/g20.jpeg",
+          description: "A political summit turns into chaos.",
+        },
+        {
+          id: 5,
+          title: "Gunslingers",
+          author: "S. Western",
+          price: 27.0,
+          category: "western",
+          image: "/images/gunslingers.jpg",
+          description: "Three gunslingers face off in a desert town.",
+        },
+        {
+          id: 6,
+          title: "Novocaine",
+          author: "D. Black",
+          price: 18.75,
+          category: "comedy",
+          image: "/images/novocaine.webp",
+          description: "A dentist gets caught in a criminal web.",
+        },
+        {
+          id: 7,
+          title: "Brave New World",
+          author: "M. Hero",
+          price: 31.99,
+          category: "superhero",
+          image: "/images/bravenewworld.jpg",
+          description: "The next generation of heroes rises.",
+        },
+        {
+          id: 8,
+          title: "A Knight's War",
+          author: "Arthur L.",
+          price: 23.5,
+          category: "historical",
+          image: "/images/AKnight'sWar.jpg",
+          description: "A knight defends his realm from invasion.",
+        },
+        {
+          id: 9,
+          title: "Home Sweet Home",
+          author: "Zed S.",
+          price: 21.9,
+          category: "horror",
+          image: "/images/HomeSweetHome.jpg",
+          description: "A man returns to find his home haunted.",
+        },
+        {
+          id: 10,
+          title: "The Woman in the Yard",
+          author: "Laura R.",
+          price: 24.0,
+          category: "mystery",
+          image: "images/TheWomanintheYard.jpg",
+          description: "A woman uncovers secrets in a rural town.",
+        },
+        {
+          id: 11,
+          title: "Digital Destiny",
+          author: "Tech Bros",
+          price: 28.5,
+          category: "sci-fi",
+          image: "images/DigitalDestiny.jpg",
+          description: "In a world run by AI, one human dares to rebel.",
+        },
+        {
+          id: 12,
+          title: "Neon Divide",
+          author: "CyberCore",
+          price: 26.0,
+          category: "cyberpunk",
+          image: "/images/NeonDivide.jpg",
+          description: "Hackers take control of a neon-lit city.",
+        },
+        {
+          id: 13,
+          title: "Echoes of Tomorrow",
+          author: "Timelabs",
+          price: 20.0,
+          category: "time travel",
+          image: "/images/EchoeofTomorrow.jpg",
+          description: "What happens if you meet your future self?",
+        },
+        {
+          id: 14,
+          title: "The Final Trial",
+          author: "Legend Books",
+          price: 22.4,
+          category: "fantasy",
+          image: "/images/TheFinalTrial.webp",
+          description: "A hero must pass the last test of fate.",
+        },
+        {
+          id: 15,
+          title: "Urban Vengeance",
+          author: "R. Steel",
+          price: 30.99,
+          category: "thriller",
+          image: "/images/UrbanVengeance.webp",
+          description: "Justice is personal in the city streets.",
+        },
+        {
+          id: 16,
+          title: "Whispers in the Fog",
+          author: "M. Grey",
+          price: 19.85,
+          category: "suspense",
+          image: "/images/WhispersintheFog.jpg",
+          description: "A detective follows a deadly trail in the mist.",
+        },
+        {
+          id: 17,
+          title: "Planet Omega",
+          author: "Galactic Inc.",
+          price: 34.0,
+          category: "sci-fi",
+          image: "/images/PlanetOmega.jpg",
+          description: "Colonists battle aliens on a hostile planet.",
+        },
+        {
+          id: 18,
+          title: "Crimson Rain",
+          author: "H. Noir",
+          price: 23.25,
+          category: "crime",
+          image: "/images/CrimsonRain.jpg",
+          description: "A killer leaves clues in blood-soaked rain.",
+        },
+        {
+          id: 19,
+          title: "The Forgotten Island",
+          author: "Treasure Tales",
+          price: 27.45,
+          category: "adventure",
+          image: "/images/TheForgottenIsland.jpg",
+          description: "A crew discovers a cursed treasure.",
+        },
+        {
+          id: 20,
+          title: "Design Thinking",
+          author: "Laura Martínez",
+          price: 32.25,
+          category: "design",
+          image: "/images/DesignThinking.jpg",
+          description:
+            "Principios y técnicas para crear experiencias de usuario excepcionales.",
+        },
+      ];
+
+      let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      let currentCategory = "all";
+
+      const homeView = document.getElementById("home-view");
+      const movieDetailView = document.getElementById("movie-detail-view");
+      const contactView = document.getElementById("contact-view");
+      const moviesContainer = document.getElementById("movies-container");
+      const categoryFilter = document.getElementById("category-filter");
+      const contactForm = document.getElementById("contact-form");
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderMovies(moviesData);
+        setupEventListeners();
+      });
+
+      function setupEventListeners() {
+        contactForm.addEventListener("submit", handleContactSubmit);
+      }
+
+      function showHome() {
+        homeView.style.display = "block";
+        movieDetailView.style.display = "none";
+        contactView.style.display = "none";
+        window.scrollTo(0, 0);
+        return false;
+      }
+
+      function showContact() {
+        homeView.style.display = "none";
+        movieDetailView.style.display = "none";
+        contactView.style.display = "block";
+        window.scrollTo(0, 0);
+        return false;
+      }
+
+      function showMovieDetail(movieId) {
+        const movie = moviesData.find((m) => m.id === movieId);
+        if (!movie) return;
+
+        document.getElementById("detail-image").src = movie.image;
+        document.getElementById("detail-title").textContent = movie.title;
+        document.getElementById("detail-author").textContent = movie.author;
+        document.getElementById("detail-price").textContent =
+          movie.price.toFixed(2);
+        document.getElementById("detail-category").textContent = movie.category;
+        document.getElementById("detail-description").textContent =
+          movie.description;
+
+        const favoriteBtn = document.getElementById("detail-favorite-btn");
+        favoriteBtn.className = favorites.includes(movie.id)
+          ? "favorite-btn active"
+          : "favorite-btn";
+        favoriteBtn.onclick = () => toggleFavorite(movie.id, favoriteBtn);
+
+        homeView.style.display = "none";
+        movieDetailView.style.display = "block";
+        contactView.style.display = "none";
+        window.scrollTo(0, 0);
+      }
+
+      function renderMovies(movies) {
+        moviesContainer.innerHTML = "";
+
+        movies.forEach((movie) => {
+          const isFavorite = favorites.includes(movie.id);
+
+          const movieElement = document.createElement("div");
+          movieElement.className = "movie-card";
+          movieElement.innerHTML = `
+                    <img src="${movie.image}" alt="${
+            movie.title
+          }" class="movie-image">
+                    <button class="favorite-btn ${
+                      isFavorite ? "active" : ""
+                    }" onclick="toggleFavorite(${movie.id}, this)">♥</button>
+                    <div class="movie-info">
+                        <h3 class="movie-title">${movie.title}</h3>
+                        <p class="movie-author">${movie.author}</p>
+                        <p class="movie-price">S/.${movie.price.toFixed(2)}</p>
+                        <p class="movie-description">${movie.description}</p>
+                        <a href="#" class="btn" onclick="showMovieDetail(${
+                          movie.id
+                        })">Ver Detalles</a>
+                    </div>
+                `;
+
+          moviesContainer.appendChild(movieElement);
+        });
+      }
+
+      function filterMovies() {
+        currentCategory = categoryFilter.value;
+        const filteredMovies =
+          currentCategory === "all"
+            ? moviesData
+            : moviesData.filter((movie) => movie.category === currentCategory);
+        renderMovies(filteredMovies);
+      }
+
+      function toggleFavorite(movieId, button) {
+        const index = favorites.indexOf(movieId);
+        if (index === -1) {
+          favorites.push(movieId);
+          if (button) button.classList.add("active");
+        } else {
+          favorites.splice(index, 1);
+          if (button) button.classList.remove("active");
+        }
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+      }
+
+      function handleContactSubmit(e) {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        alert(
+          `Gracias ${name}, tu mensaje ha sido enviado. Nos pondremos en contacto contigo pronto.`
+        );
+
+        contactForm.reset();
+        return false;
+      }
+
+      window.showHome = showHome;
+      window.showContact = showContact;
+      window.showMovieDetail = showMovieDetail;
+      window.filterMovies = filterMovies;
+      window.toggleFavorite = toggleFavorite;
+    </script>
+  </body>
+</html>
